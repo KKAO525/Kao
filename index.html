@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kao</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+        body { background-color: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; height: 100vh; display: flex; justify-content: center; align-items: center; }
+
+        /* หน้ากดเข้า */
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: flex; justify-content: center; align-items: center;
+            z-index: 9999; color: white; transition: 1s ease-in-out; cursor: pointer;
+        }
+        .click-text { font-size: 16px; letter-spacing: 5px; animation: pulse 2s infinite; font-weight: bold; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.95); } }
+
+        /* วิดีโอพื้นหลัง */
+        .video-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
+        .video-container iframe { width: 100vw; height: 100vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1.6); }
+        .v-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); z-index: 0; }
+
+        /* การ์ดโปรไฟล์ */
+        .profile-card {
+            position: relative; z-index: 1; text-align: center;
+            background: rgba(255, 255, 255, 0.02); padding: 50px 40px; border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1); width: 360px; color: white;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            animation: cardFade 1.5s ease;
+        }
+        @keyframes cardFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ส่วนของรูปโปรไฟล์และสถานะ */
+        .pFP { width: 115px; height: 115px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.4); margin-bottom: 20px; object-fit: cover; transition: 0.5s; }
+        .pFP:hover { transform: scale(1.05) rotate(3deg); }
+        
+        .status-dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; border: 2px solid #111; position: absolute; bottom: 28px; right: 8px; }
+        .online { background: #43b581; box-shadow: 0 0 10px #43b581; }
+        .idle { background: #faa61a; box-shadow: 0 0 10px #faa61a; }
+        .dnd { background: #f04747; box-shadow: 0 0 10px #f04747; }
+        .offline { background: #747f8d; }
+
+        h1 { font-size: 28px; margin-bottom: 5px; letter-spacing: 2px; text-transform: lowercase; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .bio { color: #888; margin-bottom: 35px; font-size: 13px; font-style: italic; min-height: 20px; }
+
+        /* ปุ่ม Link พร้อม Animation */
+        .links { display: flex; flex-direction: column; gap: 15px; }
+        .btn {
+            text-decoration: none; color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.03);
+            padding: 14px; border-radius: 12px; font-size: 12px; letter-spacing: 3px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255,255,255,0.05);
+            animation: pulseBtn 4s infinite;
+        }
+        @keyframes pulseBtn { 0%, 100% { border-color: rgba(255,255,255,0.05); } 50% { border-color: rgba(255,255,255,0.2); } }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="overlay" onclick="startExperience()">
+        <div class="click-text">[ CLICK TO ENTER ]</div>
+    </div>
+
+    <div class="video-container"><div id="player"></div></div>
+    <div class="v-overlay"></div>
+
+    <div class="profile-card">
+        <div style="position: relative; display: inline-block;">
+            <img src="" id="discord-pfp" class="pFP" alt="Avatar">
+            <div id="status-dot" class="status-dot"></div>
+        </div>
+        
+        <h1 id="discord-name">jodyoukn0w</h1>
+        <p id="discord-bio" class="bio">PORZAX - ใครไม่รักแต่เค้ารัก</p>
+
+        <div class="links">
+            <a href="https://www.facebook.com/rithanon.kongpan?locale=th_TH" target="_blank" class="btn">FACEBOOK</a>
+            <a href="https://www.instagram.com/_kao.13/" target="_blank" class="btn">INSTAGRAM</a>
+            <a href="https://discord.gg/PSqGk6hy" target="_blank" class="btn">DISCORD</a>
+        </div>
+    </div>
+
+    <script>
+        const discordID = "1146412182557425724"; 
+        var player;
+
+        // ดึงข้อมูล Real-time จาก Discord
+        async function updateStatus() {
+            try {
+                const res = await fetch(`https://api.lanyard.rest/v1/users/${discordID}`);
+                const { data } = await res.json();
+                
+                if(data.discord_user) {
+                    const pfp = document.getElementById('discord-pfp');
+                    pfp.src = `https://cdn.discordapp.com/avatars/${discordID}/${data.discord_user.avatar}.png?size=256`;
+                    document.getElementById('discord-name').innerText = data.discord_user.username;
+                    const dot = document.getElementById('status-dot');
+                    dot.className = 'status-dot ' + data.discord_status;
+
+                    const bio = document.getElementById('discord-bio');
+                    if (data.listening_to_spotify) {
+                        bio.innerHTML = `🎧 Listening to <b>${data.spotify.song}</b>`;
+                    } else if (data.activities.length > 0) {
+                        bio.innerText = `🎮 Playing ${data.activities[0].name}`;
+                    } else {
+                        bio.innerText = "PORZAX - ใครไม่รักแต่เค้ารัก";
+                    }
+                }
+            } catch (e) { console.error("Lanyard Error:", e); }
+        }
+
+        setInterval(updateStatus, 10000);
+        updateStatus();
+
+        // YouTube API
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                videoId: 'tu_QVnVWEsw',
+                playerVars: { 'autoplay': 0, 'controls': 0, 'loop': 1, 'playlist': 'tu_QVnVWEsw', 'rel': 0, 'modestbranding': 1 },
+                events: { 'onReady': () => {} }
+            });
+        }
+
+        function startExperience() {
+            const overlay = document.getElementById('overlay');
+            overlay.style.opacity = '0';
+            overlay.style.pointerEvents = 'none';
+            if(player) { player.playVideo(); player.unMute(); player.setVolume(50); }
+        }
+    </script>
+</body>
+</html>
